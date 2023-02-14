@@ -2,17 +2,18 @@ import { assert } from "chai";
 
 import { QueryBus } from "@app/bus/QueryBus";
 import { QueryHandlerAlreadyRegisteredException, QueryHandlerNotRegisteredException } from "@app/bus/exceptions";
+import { AbstractBaseQuery } from "@app/bus/utils";
 
 import sinon = require("sinon");
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestQuery {}
+class TestQuery extends AbstractBaseQuery<string> {}
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestQuery1 {}
+class TestQuery1 extends AbstractBaseQuery<string> {}
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestQuery2 {}
+class TestQuery2 extends AbstractBaseQuery<string> {}
 
 describe("QueryBus unit", () => {
   it("Register a handler", () => {
@@ -66,7 +67,7 @@ describe("QueryBus unit", () => {
     queryBus.register(TestQuery, handler);
 
     const query = new TestQuery();
-    const result = await queryBus.execute<string>(query);
+    const result = await queryBus.execute(query);
 
     assert.isTrue(handler.calledOnceWithExactly(query));
     assert.equal(result, returnValue);
@@ -80,7 +81,7 @@ describe("QueryBus unit", () => {
     queryBus.register(TestQuery, async (cmd) => Promise.resolve(handler(cmd)));
 
     const query = new TestQuery();
-    const result = await queryBus.execute<string>(query);
+    const result = await queryBus.execute(query);
 
     assert.isTrue(handler.calledOnceWithExactly(query));
     assert.equal(result, returnValue);
@@ -90,7 +91,7 @@ describe("QueryBus unit", () => {
     const queryBus = new QueryBus();
 
     try {
-      await queryBus.execute(TestQuery);
+      await queryBus.execute(new TestQuery());
       assert.fail("Did not throw");
     } catch (e) {
       assert.instanceOf(e, QueryHandlerNotRegisteredException);
