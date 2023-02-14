@@ -1,3 +1,3 @@
-export { CommandBus } from "@app/bus/CommandBus";
-export { QueryBus } from "@app/bus/QueryBus";
-export { EventBus } from "@app/bus/EventBus";
+export { CommandBus, AbstractBaseCommand, CommandHandler } from "@app/bus/CommandBus";
+export { QueryBus, AbstractBaseQuery, QueryHandler } from "@app/bus/QueryBus";
+export { EventBus, AbstractBaseEvent, EventHandler } from "@app/bus/EventBus";
