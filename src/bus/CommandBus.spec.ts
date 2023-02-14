@@ -1,18 +1,18 @@
 import { assert } from "chai";
 
-import { CommandBus } from "@app/bus/CommandBus";
+import { AbstractBaseCommand, CommandBus } from "@app/bus/CommandBus";
 import { CommandHandlerAlreadyRegisteredException, CommandHandlerNotRegisteredException } from "@app/bus/exceptions";
 
 import sinon = require("sinon");
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestCommand {}
+class TestCommand extends AbstractBaseCommand {}
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestCommand1 {}
+class TestCommand1 extends AbstractBaseCommand {}
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestCommand2 {}
+class TestCommand2 extends AbstractBaseCommand {}
 
 describe("CommandBus unit", () => {
   it("Register a handler", () => {
@@ -87,7 +87,7 @@ describe("CommandBus unit", () => {
     const commandBus = new CommandBus();
 
     try {
-      await commandBus.execute(TestCommand);
+      await commandBus.execute(new TestCommand());
       assert.fail("Did not throw");
     } catch (e) {
       assert.instanceOf(e, CommandHandlerNotRegisteredException);

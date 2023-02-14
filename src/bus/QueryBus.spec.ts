@@ -1,8 +1,8 @@
 import { assert } from "chai";
 
 import { QueryBus } from "@app/bus/QueryBus";
+import { AbstractBaseQuery } from "@app/bus/QueryBus";
 import { QueryHandlerAlreadyRegisteredException, QueryHandlerNotRegisteredException } from "@app/bus/exceptions";
-import { AbstractBaseQuery } from "@app/bus/utils";
 
 import sinon = require("sinon");
 

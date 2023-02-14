@@ -1,6 +1,6 @@
 import { assert } from "chai";
 
-import { EventBus } from "@app/bus/EventBus";
+import { AbstractBaseEvent, EventBus } from "@app/bus/EventBus";
 
 import sinon = require("sinon");
 
@@ -10,13 +10,13 @@ const isUUID = (str: string): boolean => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestEvent {}
+class TestEvent extends AbstractBaseEvent {}
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestEvent1 {}
+class TestEvent1 extends AbstractBaseEvent {}
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class TestEvent2 {}
+class TestEvent2 extends AbstractBaseEvent {}
 
 describe("EventBus unit", () => {
   it("Subscribe", () => {

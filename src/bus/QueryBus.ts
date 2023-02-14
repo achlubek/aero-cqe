@@ -1,19 +1,31 @@
 import { QueryHandlerAlreadyRegisteredException, QueryHandlerNotRegisteredException } from "@app/bus/exceptions";
-import { AbstractBaseQuery, Constructor, ExtractQueryReturnType, QueryHandler } from "@app/bus/utils";
+import { Constructor } from "@app/bus/utils";
+
+export abstract class AbstractBaseQuery<ResType> {
+  public $$cqe$internal$queryReturnHelper!: ResType; // somehow is not visible, good
+}
+export type ExtractQueryReturnType<QueryType extends AbstractBaseQuery<unknown>> =
+  QueryType["$$cqe$internal$queryReturnHelper"];
+
+export type QueryHandler<QueryType extends AbstractBaseQuery<unknown>> = (
+  query: QueryType
+) => Promise<ExtractQueryReturnType<QueryType>> | ExtractQueryReturnType<QueryType>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyQueryHandler = QueryHandler<AbstractBaseQuery<any>>;
 
 export class QueryBus {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private handlers: Record<string, QueryHandler<AbstractBaseQuery<any>> | undefined> = {};
+  private handlers: Record<string, AnyQueryHandler | undefined> = {};
 
   public register<T extends AbstractBaseQuery<ExtractQueryReturnType<T>>>(
     queryClass: Constructor<T>,
-    handler: QueryHandler<AbstractBaseQuery<ExtractQueryReturnType<T>>>
+    handler: QueryHandler<T>
   ): void {
     const queryName = queryClass.name;
     if (this.handlers[queryName]) {
       throw new QueryHandlerAlreadyRegisteredException(queryName);
     }
-    this.handlers[queryName] = handler;
+    this.handlers[queryName] = handler as AnyQueryHandler;
   }
 
   public getHandledQueries(): string[] {
